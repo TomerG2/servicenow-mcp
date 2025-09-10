@@ -18,6 +18,7 @@ from servicenow_mcp.tools.catalog_tools import (
     ListCatalogCategoriesParams,
     ListCatalogItemsParams,
     MoveCatalogItemsParams,
+    OpenServiceNowLaptopRefreshRequestParams,
     UpdateCatalogCategoryParams,
 )
 from servicenow_mcp.tools.catalog_tools import (
@@ -37,6 +38,9 @@ from servicenow_mcp.tools.catalog_tools import (
 )
 from servicenow_mcp.tools.catalog_tools import (
     update_catalog_category as update_catalog_category_tool,
+)
+from servicenow_mcp.tools.catalog_tools import (
+    open_service_now_laptop_refresh_request as open_service_now_laptop_refresh_request_tool,
 )
 from servicenow_mcp.tools.catalog_variables import (
     CreateCatalogItemVariableParams,
@@ -437,6 +441,13 @@ def get_tool_definitions(
             MoveCatalogItemsParams,
             str,  # Expects JSON string
             "Move catalog items to a different category.",
+            "json_dict",  # Tool returns Pydantic model
+        ),
+        "open_service_now_laptop_refresh_request": (
+            open_service_now_laptop_refresh_request_tool,
+            OpenServiceNowLaptopRefreshRequestParams,
+            str,  # Expects JSON string
+            "Open a ServiceNow laptop refresh request.",
             "json_dict",  # Tool returns Pydantic model
         ),
         "get_optimization_recommendations": (

@@ -79,6 +79,14 @@ class MoveCatalogItemsParams(BaseModel):
     target_category_id: str = Field(..., description="Target category ID to move items to")
 
 
+class OpenServiceNowLaptopRefreshRequestParams(BaseModel):
+    """Parameters for opening a ServiceNow laptop refresh request."""
+    
+    laptop_choices: str = Field("lenovo_think_pad_p_16_gen_2", description="Laptop choice for the refresh request")
+    who_is_this_request_for: str = Field(..., description="User ID for whom this request is being made")
+    sysparm_quantity: int = Field(1, description="Quantity for the request")
+
+
 def list_catalog_items(
     config: ServerConfig,
     auth_manager: AuthManager,
@@ -613,5 +621,63 @@ def move_catalog_items(
         return CatalogResponse(
             success=False,
             message=f"Error moving catalog items: {str(e)}",
+            data=None,
+        )
+
+
+def open_service_now_laptop_refresh_request(
+    config: ServerConfig,
+    auth_manager: AuthManager,
+    params: OpenServiceNowLaptopRefreshRequestParams,
+) -> CatalogResponse:
+    """
+    Open a ServiceNow laptop refresh request.
+
+    Args:
+        config: Server configuration
+        auth_manager: Authentication manager
+        params: Parameters for the laptop refresh request
+
+    Returns:
+        Response containing the result of the operation
+    """
+    logger.info("Opening ServiceNow laptop refresh request")
+    
+    # Build the API URL with the hardcoded laptop refresh ID
+    laptop_refresh_id = "1d3eae4f93232210eead74418bba10f4"
+    url = f"{config.instance_url}/api/sn_sc/servicecatalog/items/{laptop_refresh_id}/order_now"
+    
+    # Prepare request body
+    body = {
+        "sysparm_quantity": params.sysparm_quantity,
+        "variables": {
+            "laptop_choices": params.laptop_choices,
+            "who_is_this_request_for": params.who_is_this_request_for
+        }
+    }
+    
+    # Make the API request
+    headers = auth_manager.get_headers()
+    headers["Accept"] = "application/json"
+    headers["Content-Type"] = "application/json"
+    
+    try:
+        response = requests.post(url, headers=headers, json=body)
+        response.raise_for_status()
+        
+        # Process the response
+        result = response.json()
+        
+        return CatalogResponse(
+            success=True,
+            message="Successfully opened laptop refresh request",
+            data=result,
+        )
+    
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error opening laptop refresh request: {str(e)}")
+        return CatalogResponse(
+            success=False,
+            message=f"Error opening laptop refresh request: {str(e)}",
             data=None,
         ) 

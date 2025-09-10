@@ -35,6 +35,8 @@ catalog_builder:
   - create_catalog_category
   - update_catalog_category
   - move_catalog_items
+  # Laptop Refresh Request
+  - open_service_now_laptop_refresh_request
   # Variables
   - create_catalog_item_variable
   - list_catalog_item_variables
@@ -165,6 +167,8 @@ full:
   - create_catalog_category
   - update_catalog_category
   - move_catalog_items
+  # Laptop Refresh Request
+  - open_service_now_laptop_refresh_request
   # Catalog (Optimization)
   - get_optimization_recommendations
   # Catalog (Variables)
